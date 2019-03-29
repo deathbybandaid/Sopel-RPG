@@ -83,7 +83,7 @@ def rpg_execute_start(bot, trigger, command_type):
     if rpg_run_dict["rpg_run_error"]:
         messagelog_error(bot, rpg.messagesid, rpg_run_dict["rpg_run_error"])
     else:
-        messagelog(bot, rpg.messagesid, trigger.sender, "All is good to continue running.")
+        rpg_execute_process(bot, rpg)
 
     messagelog_error(bot, rpg.messagesid, "test_error1")
 
@@ -91,6 +91,10 @@ def rpg_execute_start(bot, trigger, command_type):
     messagelog_error(bot, rpg.messagesid, "test_error2")
 
     messagelog_exit(bot, rpg, rpg.messagesid)
+
+
+def rpg_execute_process(bot, rpg):
+    messagelog(bot, rpg.messagesid, trigger.sender, "All is good to continue running.")
 
 
 """
