@@ -70,7 +70,7 @@ def rpg_execute_start(bot, trigger, command_type):
     messagelog_start(bot, rpg.messagesid)
 
     messagelog_error(bot, rpg.messagesid, "test_error1")
-    messagelog(bot, rpg.messagesid, trigger.sender, "Testing RPG    command_type=" + command_type + "    messageID=" + str(rpg.messagesid))
+    messagelog(bot, rpg.messagesid, trigger.sender, ["Testing RPG", "command_type=" + command_type, + "messageID=" + str(rpg.messagesid)])
 
     rpg = rpg_prerun(bot, trigger, command_type, rpg)
 
