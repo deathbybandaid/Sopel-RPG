@@ -112,7 +112,7 @@ def sopel_triggerargs(bot, trigger, command_type):
 
     if command_type in ['module_command']:
         triggerargs = spicemanip.main(triggerargs, '2+', 'list')
-    elif ommand_type in ['nickname_command']:
+    elif command_type in ['nickname_command']:
         triggerargs = spicemanip.main(triggerargs, '3+', 'list')
 
     return triggerargs
