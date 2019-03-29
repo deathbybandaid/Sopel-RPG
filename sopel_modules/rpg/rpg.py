@@ -7,6 +7,7 @@ from sopel import module
 import spicemanip
 import sys
 import inspect
+import time
 
 
 def configure(config):
@@ -51,6 +52,12 @@ def execute_start(bot, trigger, command_type):
 
     rpg = rpg_prerun(bot, trigger, command_type, rpg)
 
+    rpg_run_dict = rpg_run_check(bot, rpg)
+    if rpg_run_dict["rpg_run_error"]:
+        bot.say(rpg_run_dict["rpg_run_error"])
+    else:
+        bot.say("All is good to continue running.")
+
 
 """
 Prerun
@@ -58,6 +65,8 @@ Prerun
 
 
 def rpg_prerun(bot, trigger, command_type, rpg):
+
+    rpg.start = time.time()
 
     rpg.command_type = command_type
 
@@ -72,6 +81,13 @@ def rpg_prerun(bot, trigger, command_type, rpg):
     bot.say(str(rpg.triggerargs))
 
     return rpg
+
+
+def rpg_run_check(bot, rpg):
+    rpg_run_dict = {"rpg_run_error": None}
+    if rpg.channel_priv:
+        rpg_run_dict["rpg_run_error"] = "Cannot run in private message!"
+    return rpg_run_dict
 
 
 """
