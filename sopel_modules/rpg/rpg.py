@@ -141,9 +141,7 @@ def messagelog_error(bot, log_id, error_id):
             if existing_messagedict["error_id"] == error_id:
                 existing_messagedict["count"] += 1
                 error_exists_prior = True
-                newloglist.append(existing_messagedict)
-        else:
-            newloglist.append(existing_messagedict)
+        newloglist.append(existing_messagedict)
 
     if not error_exists_prior:
         newmessagedict = {"type": "error", "error_id": error_id, "count": 1}
