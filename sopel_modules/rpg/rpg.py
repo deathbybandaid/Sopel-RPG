@@ -44,7 +44,8 @@ def rpg_execute_start(bot, trigger, command_type):
 
     bot.say("Testing RPG    command_type=" + command_type)
 
-    bot.say(str(bot.channels.keys()))
+    for channel in bot.channels.keys():
+        bot.say(str(channel))
 
     # Create dynamic class
     rpg = class_create('rpg')
