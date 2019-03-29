@@ -76,6 +76,7 @@ def rpg_execute_start(bot, trigger, command_type):
 
     rpg_run_dict = rpg_run_check(bot, rpg)
     if rpg_run_dict["rpg_run_error"]:
+        bot.say("here")
         messagelog_error(bot, rpg.messagesid, rpg_run_dict["rpg_run_error"])
     else:
         messagelog(bot, rpg.messagesid, trigger.sender, "All is good to continue running.")
