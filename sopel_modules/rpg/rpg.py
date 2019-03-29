@@ -31,14 +31,12 @@ def rpg_trigger_normal(bot, trigger):
 # work with /me ACTION
 @module.rule('^(?:challenges|(?:fi(?:ght|te)|duel)s(?:\s+with)?)\s+([a-zA-Z0-9\[\]\\`_\^\{\|\}-]{1,32}).*')
 @module.intent('ACTION')
-@sopel.module.thread(True)
 def rpg_trigger_action(bot, trigger):
     execute_start(bot, trigger, str(current_function()).split("rpg_trigger_")[-1])
 
 
 # bot.nick do this
-@nickname_commands('rpg')
-@sopel.module.thread(True)
+@module.nickname_commands('rpg')
 def rpg_trigger_nick_command(bot, trigger):
     execute_start(bot, trigger, str(current_function()).split("rpg_trigger_")[-1])
 
