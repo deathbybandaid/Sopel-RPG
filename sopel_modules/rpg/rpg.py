@@ -69,7 +69,7 @@ def rpg_prerun(bot, trigger, command_type, rpg):
     rpg.triggerargs = []
 
     if len(trigger.args) > 1:
-        rpg.triggerargs = spicemanip.main(trigger.args[0], 'create')
+        rpg.triggerargs = spicemanip.main(trigger.args[1], 'create')
     rpg.triggerargs = spicemanip.main(rpg.triggerargs, 'create')
     bot.say(str(rpg.triggerargs))
 
