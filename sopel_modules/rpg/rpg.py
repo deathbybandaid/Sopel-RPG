@@ -247,14 +247,14 @@ def osd(bot, target_array, text_type_array, text_array):
             currentstring = ''
             texttargetarray = []
             for textstring in temptextarray:
-                if len(textstring) > osd_limit:
+                if len(textstring) > 420:
                     chunks = textstring.split()
                     for chunk in chunks:
                         if currentstring == '':
                             currentstring = chunk
                         else:
                             tempstring = str(currentstring + " " + chunk)
-                            if len(tempstring) <= osd_limit:
+                            if len(tempstring) <= 420:
                                 currentstring = tempstring
                             else:
                                 texttargetarray.append(currentstring)
@@ -270,14 +270,14 @@ def osd(bot, target_array, text_type_array, text_array):
             for textstring in texttargetarray:
                 if currentstring == '':
                     currentstring = textstring
-                elif len(textstring) > osd_limit:
+                elif len(textstring) > 420:
                     if currentstring != '':
                         combinedtextarray.append(currentstring)
                         currentstring = ''
                     combinedtextarray.append(textstring)
                 else:
                     tempstring = currentstring + "   " + textstring
-                    if len(tempstring) <= osd_limit:
+                    if len(tempstring) <= 420:
                         currentstring = tempstring
                     else:
                         combinedtextarray.append(currentstring)
