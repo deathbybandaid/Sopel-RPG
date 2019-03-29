@@ -73,11 +73,11 @@ def rpg_execute_start(bot, trigger, command_type):
     rpg.messagesid = uuid.uuid4()
     messagelog_start(bot, rpg.messagesid)
 
+    rpg = rpg_prerun(bot, trigger, command_type, rpg)
+
     messagelog_error(bot, rpg.messagesid, "test_error1")
     startupdebug.append("messageID=" + str(rpg.messagesid))
-    messagelog(bot, rpg.messagesid, trigger.sender, startupdebug)
-
-    rpg = rpg_prerun(bot, trigger, command_type, rpg)
+    messagelog(bot, rpg.messagesid, rpg.channel_replyto, startupdebug)
 
     rpg_run_dict = rpg_run_check(bot, rpg)
     if rpg_run_dict["rpg_run_error"]:
@@ -94,7 +94,7 @@ def rpg_execute_start(bot, trigger, command_type):
 
 
 def rpg_execute_process(bot, rpg):
-    messagelog(bot, rpg.messagesid, trigger.sender, "All is good to continue running.")
+    messagelog(bot, rpg.messagesid, rpg.channel_replyto, "All is good to continue running.")
 
 
 """
