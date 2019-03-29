@@ -4,10 +4,13 @@ from __future__ import unicode_literals, absolute_import, division, print_functi
 
 from sopel import module
 
+from .rpg_errors import *
+
 import spicemanip
 import sys
 import inspect
 import time
+import uuid
 
 
 def configure(config):
@@ -15,7 +18,18 @@ def configure(config):
 
 
 def setup(bot):
-    pass
+
+    # Create memory reference for game
+    bot.memory['rpg'] = dict()
+
+    # open channel settings for current bot channels
+    bot.memory['rpg']['channel_settings'] = dict()
+    for channel in bot.channels.keys():
+        bot.memory['rpg']['channel_settings'][str(channel).lower()] = bot.db.get_channel_value(bot, channel, 'rpg_channel_settings') or dict()
+
+        if 'game_enabled' in bot.memory['rpg']['channel_settings'][str(channel).lower()].keys():
+            if bot.memory['rpg']['channel_settings'][str(channel).lower()]['game_enabled']:
+                dd = 5
 
 
 """
@@ -44,12 +58,12 @@ def rpg_execute_start(bot, trigger, command_type):
 
     bot.say("Testing RPG    command_type=" + command_type)
 
-    for channel in bot.channels.keys():
-        bot.say(str(channel))
-
     # Create dynamic class
     rpg = class_create('rpg')
     rpg.default = 'rpg'
+
+    rpg.uniqueid = uuid.uuid4()
+    bot.say("your unique ID is " + str(rpg.uniqueid))
 
     bot.say("prerun time")
 
