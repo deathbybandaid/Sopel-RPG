@@ -70,9 +70,7 @@ def rpg_execute_start(bot, trigger, command_type):
     rpg.messagesid = uuid.uuid4()
     messagelog_start(bot, rpg.messagesid)
 
-    messagelog(bot, rpg.messagesid, trigger.sender, "Testing RPG    command_type=" + command_type)
-
-    messagelog(bot, rpg.messagesid, trigger.sender, "your unique ID is " + str(rpg.messagesid))
+    messagelog(bot, rpg.messagesid, trigger.sender, "Testing RPG    command_type=" + command_type + "    messageID=" + str(rpg.messagesid))
 
     rpg = rpg_prerun(bot, trigger, command_type, rpg)
 
@@ -104,8 +102,6 @@ def rpg_prerun(bot, trigger, command_type, rpg):
 
     rpg.triggerargs = sopel_triggerargs(bot, trigger, command_type)
 
-    bot.say(str(rpg.triggerargs))
-
     return rpg
 
 
@@ -131,17 +127,19 @@ def messagelog_start(bot, log_id):
 
 def messagelog_error(bot, log_id, error_id):
 
-    messagedict = {"type": "error", "error_id": error_id, "count": 0, "recipient": "error"}
-
     newloglist = []
     for existing_messagedict in bot.memory['rpg']['message_display'][log_id]:
         if existing_messagedict["type"] == "error":
             if existing_messagedict["error_id"] == error_id:
                 existing_messagedict["count"] += 1
-        newloglist.append(existing_messagedict)
+                newloglist.append(existing_messagedict)
+            else:
+                newmessagedict = {"type": "error", "error_id": error_id, "count": 1, "recipient": "error"}
+                newloglist.append(newmessagedict)
+        else:
+            newloglist.append(existing_messagedict)
 
-    bot.memory['rpg']['message_display'][log_id] = []
-    bot.memory['rpg']['message_display'][log_id].extend(newloglist)
+    bot.memory['rpg']['message_display'][log_id] = newloglist
 
 
 def messagelog(bot, log_id, recipient, message):
