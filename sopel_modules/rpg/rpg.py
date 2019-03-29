@@ -12,6 +12,7 @@ import spicemanip
 import sys
 import time
 import uuid
+import copy
 
 
 def configure(config):
@@ -187,6 +188,42 @@ def messagelog_exit(bot, rpg, log_id):
 
 """
 On Screen Text
+"""
+
+
+"""
+def osd_new(bot, recipients, text_type, messages):
+
+    messagedict = dict()
+
+    if not isinstance(messages, list):
+        text_array = [messages]
+
+    if not isinstance(recipients, list):
+        recipients = [recipients]
+    recipientslist = []
+    for recipient in recipients:
+        if recipient not in recipientslist:
+            recipientslist.append(recipient)
+    for recipient in recipientslist:
+        messagedict[recipient] = dict()
+
+    if not isinstance(text_types, list):
+        text_types = [text_types]
+
+    for recipient in recipientslist:
+        temptext = copy.deepcopy(messages)
+
+        if text_type == 'notice':
+            temptext.insert(0, recipient + ", ")
+
+        if text_type == 'say' and not str(recipient).startswith("#"):
+            text_type = 'notice'
+
+        messagedict[recipient]["messages"] = temptext
+        messagedict[recipient]["type"] = text_type
+
+    return text_array
 """
 
 
