@@ -54,6 +54,8 @@ def execute_start(bot, trigger, command_type):
     rpg = class_create('rpg')
     rpg.default = 'rpg'
 
+    bot.say("prerun time")
+
     rpg = rpg_prerun(bot, trigger, command_type)
 
 
