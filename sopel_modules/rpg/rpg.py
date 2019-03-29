@@ -13,6 +13,7 @@ def setup(bot):
     pass
 
 
-@module.commands('helloworld')
-def hello_world(bot, trigger):
-    bot.say('Hello, world!')
+@module.commands('rpg')
+def execute_start(bot, trigger, triggerargsarray, command_type):
+
+    bot.say("loading a test of rpg")
