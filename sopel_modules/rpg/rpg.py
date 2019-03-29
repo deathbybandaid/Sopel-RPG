@@ -26,13 +26,13 @@ Triggers for usage
 # Base command
 @module.commands('rpg')
 def rpg_trigger_module_command(bot, trigger):
-    execute_start(bot, trigger, str(current_function()).split("rpg_trigger_")[-1])
+    rpg_execute_start(bot, trigger, str(current_function()).split("rpg_trigger_")[-1])
 
 
 # bot.nick do this
 @module.nickname_commands('rpg')
 def rpg_trigger_nickname_command(bot, trigger):
-    execute_start(bot, trigger, str(current_function()).split("rpg_trigger_")[-1])
+    rpg_execute_start(bot, trigger, str(current_function()).split("rpg_trigger_")[-1])
 
 
 """
@@ -40,7 +40,7 @@ Command Processing
 """
 
 
-def execute_start(bot, trigger, command_type):
+def rpg_execute_start(bot, trigger, command_type):
 
     bot.say("Testing RPG    command_type=" + command_type)
 
