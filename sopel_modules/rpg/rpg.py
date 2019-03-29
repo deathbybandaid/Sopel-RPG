@@ -56,7 +56,7 @@ def execute_start(bot, trigger, command_type):
 
     bot.say("prerun time")
 
-    rpg = rpg_prerun(bot, trigger, command_type)
+    rpg = rpg_prerun(bot, trigger, command_type, rpg)
 
 
 """
@@ -64,7 +64,7 @@ RPG Dynamic Classes
 """
 
 
-def rpg_prerun(bot, trigger, command_type):
+def rpg_prerun(bot, trigger, command_type, rpg):
 
     rpg.triggerargs = []
 
