@@ -10,7 +10,6 @@ from .errormessages import *
 
 import spicemanip
 import sys
-import inspect
 import time
 import uuid
 
@@ -45,14 +44,14 @@ Triggers for usage
 @module.commands('rpg')
 @module.thread(True)
 def rpg_trigger_module_command(bot, trigger):
-    rpg_execute_start(bot, trigger, str(current_function()).split("rpg_trigger_")[-1])
+    rpg_execute_start(bot, trigger, 'module_command')
 
 
 # bot.nick do this
 @module.nickname_commands('rpg')
 @module.thread(True)
 def rpg_trigger_nickname_command(bot, trigger):
-    rpg_execute_start(bot, trigger, str(current_function()).split("rpg_trigger_")[-1])
+    rpg_execute_start(bot, trigger, 'nickname_command')
 
 
 """
