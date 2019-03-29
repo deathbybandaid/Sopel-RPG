@@ -66,7 +66,6 @@ def rpg_prerun(bot, trigger, command_type, rpg):
     rpg.channel_triggered = trigger.args[0]
     rpg.channel_replyto = trigger.sender
     rpg.channel_priv = trigger.is_privmsg
-    bot.say(str(rpg.channel_priv))
 
     rpg.triggerargs = []
 
@@ -75,9 +74,9 @@ def rpg_prerun(bot, trigger, command_type, rpg):
     rpg.triggerargs = spicemanip.main(rpg.triggerargs, 'create')
 
     if rpg.command_type in ['module_command']:
-        rpg.triggerargs = spicemanip.main(rpg.triggerargs, '2+')
+        rpg.triggerargs = spicemanip.main(rpg.triggerargs, '2+', 'list')
     elif rpg.command_type in ['nickname_command']:
-        rpg.triggerargs = spicemanip.main(rpg.triggerargs, '3+')
+        rpg.triggerargs = spicemanip.main(rpg.triggerargs, '3+', 'list')
 
     bot.say(str(rpg.triggerargs))
 
