@@ -53,7 +53,7 @@ def execute_start(bot, trigger, command_type):
 
 
 """
-RPG Dynamic Classes
+Prerun
 """
 
 
@@ -67,20 +67,14 @@ def rpg_prerun(bot, trigger, command_type, rpg):
     rpg.channel_replyto = trigger.sender
     rpg.channel_priv = trigger.is_privmsg
 
-    rpg.triggerargs = []
-
-    if len(trigger.args) > 1:
-        rpg.triggerargs = spicemanip.main(trigger.args[1], 'create')
-    rpg.triggerargs = spicemanip.main(rpg.triggerargs, 'create')
-
-    if rpg.command_type in ['module_command']:
-        rpg.triggerargs = spicemanip.main(rpg.triggerargs, '2+', 'list')
-    elif rpg.command_type in ['nickname_command']:
-        rpg.triggerargs = spicemanip.main(rpg.triggerargs, '3+', 'list')
-
-    bot.say(str(rpg.triggerargs))
+    rpg.triggerargs = sopel_triggerargs(bot, trigger, command_type)
 
     return rpg
+
+
+"""
+RPG Dynamic Classes
+"""
 
 
 def class_create(classname):
@@ -102,6 +96,26 @@ def class_create(classname):
     exec(compile("class class_" + str(classname) + ": " + compiletext, "", "exec"))
     newclass = eval('class_'+classname+"()")
     return newclass
+
+
+"""
+Sopel Triggerargs list handling
+"""
+
+
+def sopel_triggerargs(bot, trigger, command_type):
+    triggerargs = []
+
+    if len(trigger.args) > 1:
+        triggerargs = spicemanip.main(trigger.args[1], 'create')
+    triggerargs = spicemanip.main(triggerargs, 'create')
+
+    if command_type in ['module_command']:
+        triggerargs = spicemanip.main(triggerargs, '2+', 'list')
+    elif ommand_type in ['nickname_command']:
+        triggerargs = spicemanip.main(triggerargs, '3+', 'list')
+
+    return triggerargs
 
 
 """
