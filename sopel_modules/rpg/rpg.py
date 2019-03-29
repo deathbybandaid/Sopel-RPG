@@ -30,7 +30,7 @@ def rpg_trigger_module_command(bot, trigger):
 
 # bot.nick do this
 @module.nickname_commands('rpg')
-def rpg_trigger_nick_command(bot, trigger):
+def rpg_trigger_nickname_command(bot, trigger):
     execute_start(bot, trigger, str(current_function()).split("rpg_trigger_")[-1])
 
 
@@ -69,7 +69,7 @@ def rpg_prerun(bot, trigger, command_type, rpg):
 
     if rpg.command_type in ['module_command']:
         rpg.triggerargs = spicemanip.main(rpg.triggerargs, '2+')
-    elif rpg.command_type in ['nick_command']:
+    elif rpg.command_type in ['nickname_command']:
         rpg.triggerargs = spicemanip.main(rpg.triggerargs, '3+')
 
     bot.say(str(rpg.triggerargs))
