@@ -63,6 +63,7 @@ def rpg_prerun(bot, trigger, command_type, rpg):
 
     rpg.channel = trigger.args[0]
     bot.say(rpg.channel)
+    bot.say(trigger.sender)
 
     rpg.triggerargs = []
 
