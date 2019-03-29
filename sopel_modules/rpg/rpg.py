@@ -50,10 +50,49 @@ def execute_start(bot, trigger, command_type):
 
     bot.say("Testing RPG    command_type=" + command_type)
 
-    # triggerargsarray = spicemanip.main(trigger.group(2), 'create')
+    # Create dynamic class
+    rpg = class_create('rpg')
+    rpg.default = 'rpg'
 
-    bot.say(str(trigger.args))
-    bot.say(str(trigger))
+    rpg = rpg_prerun(bot, trigger, command_type)
+
+
+"""
+RPG Dynamic Classes
+"""
+
+
+def rpg_prerun(bot, trigger, command_type):
+
+    rpg.triggerargs = []
+
+    if len(trigger.args) > 1:
+        rpg.triggerargs = spicemanip.main(trigger.args[0], 'create')
+    rpg.triggerargs = spicemanip.main(rpg.triggerargs, 'create')
+    bot.say(str(rpg.triggerargs))
+
+    return rpg
+
+
+def class_create(classname):
+    compiletext = """
+        def __init__(self):
+            self.default = str(self.__class__.__name__)
+        def __repr__(self):
+            return repr(self.default)
+        def __str__(self):
+            return str(self.default)
+        def __iter__(self):
+            return str(self.default)
+        def __unicode__(self):
+            return str(u+self.default)
+        def lower(self):
+            return str(self.default).lower()
+        pass
+        """
+    exec(compile("class class_" + str(classname) + ": " + compiletext, "", "exec"))
+    newclass = eval('class_'+classname+"()")
+    return newclass
 
 
 """
