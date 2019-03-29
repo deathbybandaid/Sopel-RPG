@@ -44,7 +44,7 @@ Triggers for usage
 @sopel.module.thread(True)
 def rpg_trigger_main(bot, trigger):
     command_type = 'normalcom'
-    triggerargsarray = spicemanip(bot, trigger.group(2), 'create')
+    triggerargsarray = spicemanip.main(trigger.group(2), 'create')
     execute_start(bot, trigger, triggerargsarray, command_type)
 
 
@@ -108,15 +108,15 @@ def execute_main(bot, rpg, trigger, triggerargsarray):
         return
 
     # Entire command string
-    rpg.command_full_complete = spicemanip(bot, triggerargsarray, 0)
+    rpg.command_full_complete = spicemanip.main(triggerargsarray, 0)
 
     # IF "&&" is in the full input, it is treated as multiple commands, and is split
-    rpg.multi_com_list = spicemanip(bot, triggerargsarray, "split_&&")
+    rpg.multi_com_list = spicemanip.main(triggerargsarray, "split_&&")
     rpg.commands_ran = []
 
     # Cycle through command array
     for command_split_partial in rpg.multi_com_list:
-        rpg.triggerargsarray = spicemanip(bot, command_split_partial, 'create')
+        rpg.triggerargsarray = spicemanip.main(command_split_partial, 'create')
 
         # Admin only
         rpg.adminswitch = 0
@@ -128,8 +128,8 @@ def execute_main(bot, rpg, trigger, triggerargsarray):
                 errors(bot, rpg, 'commands', 4, 1)
 
         # Split commands to pass
-        rpg.command_full = spicemanip(bot, rpg.triggerargsarray, 0)
-        rpg.command_main = spicemanip(bot, rpg.triggerargsarray, 1)
+        rpg.command_full = spicemanip.main(rpg.triggerargsarray, 0)
+        rpg.command_main = spicemanip.main(rpg.triggerargsarray, 1)
         # Check Command can run
         rpg = command_process(bot, trigger, rpg)
         if rpg.command_run:
@@ -156,11 +156,11 @@ def command_process(bot, trigger, rpg):
             number_command_list = get_user_dict(bot, rpg, rpg.instigator, 'hotkey_complete') or []
             if rpg.command_main.lower() not in number_command_list:
                 adjust_user_dict_array(bot, rpg, rpg.instigator, 'hotkey_complete', [rpg.command_main.lower()], 'add')
-            commandremaining = spicemanip(bot, rpg.triggerargsarray, '2+') or ''
+            commandremaining = spicemanip.main(rpg.triggerargsarray, '2+') or ''
             number_command = str(number_command + " " + commandremaining)
-            rpg.triggerargsarray = spicemanip(bot, number_command, 'create')
-            rpg.command_full = spicemanip(bot, rpg.triggerargsarray, 0)
-            rpg.command_main = spicemanip(bot, rpg.triggerargsarray, 1)
+            rpg.triggerargsarray = spicemanip.main(number_command, 'create')
+            rpg.command_full = spicemanip.main(rpg.triggerargsarray, 0)
+            rpg.command_main = spicemanip.main(rpg.triggerargsarray, 1)
 
     # Spell Check
     if rpg.command_main.lower() not in rpg.gamedict['static']['commands'].keys() and rpg.command_main.lower() not in rpg.gamedict['static']['alt_commands'].keys() and rpg.command_main.lower() not in [x.lower() for x in rpg.gamedict["users"]['users_all']]:
@@ -176,11 +176,11 @@ def command_process(bot, trigger, rpg):
                     sim_num.append(similarlevel)
         if sim_com != [] and sim_num != []:
             sim_num, sim_com = array_arrangesort(bot, sim_num, sim_com)
-            rpg.command_main = spicemanip(bot, sim_com, 'last')
+            rpg.command_main = spicemanip.main(sim_com, 'last')
         if rpg.command_main.lower() != startcom.lower():
             rpg.triggerargsarray.remove(startcom)
             rpg.triggerargsarray.insert(0, rpg.command_main)
-            rpg.command_full = spicemanip(bot, rpg.triggerargsarray, 0)
+            rpg.command_full = spicemanip.main(rpg.triggerargsarray, 0)
 
     # Instigator versus Instigator
     if rpg.command_main.lower() == rpg.instigator.lower() and not rpg.adminswitch:
@@ -201,7 +201,7 @@ def command_process(bot, trigger, rpg):
     if rpg.command_main.lower() in [x.lower() for x in rpg.gamedict["users"]['users_all']] and rpg.command_main.lower() not in rpg.gamedict['static']['commands'].keys():
         rpg.command_main = 'combat'
         rpg.triggerargsarray.insert(0, rpg.command_main)
-        rpg.command_full = spicemanip(bot, rpg.triggerargsarray, 0)
+        rpg.command_full = spicemanip.main(rpg.triggerargsarray, 0)
 
     # Alternate commands convert
     if rpg.command_main.lower() in rpg.gamedict['static']['alt_commands'].keys():
@@ -212,7 +212,7 @@ def command_process(bot, trigger, rpg):
             errors(bot, rpg, 'commands', 9, startcom)
             return rpg
         rpg.triggerargsarray.insert(0, rpg.command_main)
-        rpg.command_full = spicemanip(bot, rpg.triggerargsarray, 0)
+        rpg.command_full = spicemanip.main(rpg.triggerargsarray, 0)
 
     # multicom multiple of the same
     if rpg.command_main.lower() in rpg.commands_ran and not rpg.adminswitch:
@@ -302,7 +302,7 @@ Exploration
 def rpg_command_main_travel(bot, rpg):
 
     subcommand_valid = ['north', 'south', 'east', 'west', 'town', 'current']
-    subcommand = spicemanip(bot, [x for x in rpg.triggerargsarray if x in subcommand_valid], 1) or 'current'
+    subcommand = spicemanip.main([x for x in rpg.triggerargsarray if x in subcommand_valid], 1) or 'current'
 
     nickmap, nickcoord = rpg_map_nick_get(bot, rpg, rpg.instigator)
     nickcoord = eval(str(nickcoord))
@@ -375,7 +375,7 @@ def rpg_command_main_administrator(bot, rpg):
     # Subcommand
     subcommand_valid = rpg.gamedict['static']['commands'][rpg.command_main.lower()]['subcommands_valid'].keys()
     subcommand_default = rpg.gamedict['static']['commands'][rpg.command_main.lower()]['subcommands_valid']['default']
-    subcommand = spicemanip(bot, [x for x in rpg.triggerargsarray if x in subcommand_valid], 1) or subcommand_default
+    subcommand = spicemanip.main([x for x in rpg.triggerargsarray if x in subcommand_valid], 1) or subcommand_default
     if not subcommand:
         errors(bot, rpg, rpg.command_main, 1, 1)
         return
@@ -383,7 +383,7 @@ def rpg_command_main_administrator(bot, rpg):
     if subcommand == 'channel':
 
         # Toggle Type
-        activation_type = spicemanip(bot, [x for x in rpg.triggerargsarray if x in rpg.gamedict['static']['commands'][rpg.command_main.lower()]['subcommands_valid'][subcommand.lower()].keys()], 1)
+        activation_type = spicemanip.main([x for x in rpg.triggerargsarray if x in rpg.gamedict['static']['commands'][rpg.command_main.lower()]['subcommands_valid'][subcommand.lower()].keys()], 1)
         if not activation_type:
             errors(bot, rpg, 'administrator', 2, 1)
             return
@@ -391,7 +391,7 @@ def rpg_command_main_administrator(bot, rpg):
         activation_type_db = str(activation_type + "_enabled")
 
         # Channel
-        channeltarget = spicemanip(bot, [x for x in rpg.triggerargsarray if x in rpg.gamedict["tempvals"]['channels_list']], 1)
+        channeltarget = spicemanip.main([x for x in rpg.triggerargsarray if x in rpg.gamedict["tempvals"]['channels_list']], 1)
         if not channeltarget:
             if rpg.channel_current.startswith('#'):
                 channeltarget = rpg.channel_current
@@ -400,7 +400,7 @@ def rpg_command_main_administrator(bot, rpg):
                 return
 
         # on/off
-        activation_direction = spicemanip(bot, [x for x in rpg.triggerargsarray if x in onoff_list], 1)
+        activation_direction = spicemanip.main([x for x in rpg.triggerargsarray if x in onoff_list], 1)
         if not activation_direction:
             errors(bot, rpg, rpg.command_main, 4, 1)
             return
@@ -443,13 +443,13 @@ def rpg_command_main_settings(bot, rpg):
     # Subcommand
     subcommand_valid = rpg.gamedict['static']['commands'][rpg.command_main.lower()]['subcommands_valid'].keys()
     subcommand_default = rpg.gamedict['static']['commands'][rpg.command_main.lower()]['subcommands_valid']['default']
-    subcommand = spicemanip(bot, [x for x in rpg.triggerargsarray if x in subcommand_valid], 1) or subcommand_default
+    subcommand = spicemanip.main([x for x in rpg.triggerargsarray if x in subcommand_valid], 1) or subcommand_default
     if not subcommand:
         errors(bot, rpg, rpg.command_main, 1, 1)
         return
 
     # Who is the target
-    target = spicemanip(bot, [x for x in rpg.triggerargsarray if x in rpg.gamedict["users"]['users_all']], 1) or rpg.instigator
+    target = spicemanip.main([x for x in rpg.triggerargsarray if x in rpg.gamedict["users"]['users_all']], 1) or rpg.instigator
     if target != rpg.instigator:
         if not rpg.adminswitch:
             errors(bot, rpg, rpg.command_main, 2, 1)
@@ -462,9 +462,9 @@ def rpg_command_main_settings(bot, rpg):
     if subcommand == 'hotkey':
         rpg.triggerargsarray.remove(subcommand)
 
-        numberused = spicemanip(bot, [x for x in rpg.triggerargsarray if str(x).isdigit()], 1) or 'nonumber'
+        numberused = spicemanip.main([x for x in rpg.triggerargsarray if str(x).isdigit()], 1) or 'nonumber'
 
-        activation_type = spicemanip(bot, [x for x in rpg.triggerargsarray if x in rpg.gamedict['static']['commands'][rpg.command_main.lower()]['subcommands_valid'][subcommand.lower()].keys()], 1) or 'view'
+        activation_type = spicemanip.main([x for x in rpg.triggerargsarray if x in rpg.gamedict['static']['commands'][rpg.command_main.lower()]['subcommands_valid'][subcommand.lower()].keys()], 1) or 'view'
 
         if hotkeysetting == 'list':
             hotkeyscurrent = get_user_dict(bot, rpg, target, 'hotkey_complete') or []
@@ -476,7 +476,7 @@ def rpg_command_main_settings(bot, rpg):
                 keynumber = get_user_dict(bot, rpg, rpg.instigator, 'hotkey_'+str(key)) or 0
                 if keynumber:
                     hotkeyslist.append(str(key) + "=" + str(keynumber))
-            hotkeyslist = spicemanip(bot, hotkeyslist, 'list')
+            hotkeyslist = spicemanip.main(hotkeyslist, 'list')
             osd(bot, rpg.channel_current, 'say', "Your hotkey list: " + hotkeyslist)
             return
 
@@ -506,12 +506,12 @@ def rpg_command_main_settings(bot, rpg):
             rpg.triggerargsarray.remove(numberused)
             rpg.triggerargsarray.remove(hotkeysetting)
 
-            newcommandhot = spicemanip(bot, rpg.triggerargsarray, 0) or 0
+            newcommandhot = spicemanip.main(rpg.triggerargsarray, 0) or 0
             if not newcommandhot:
                 errors(bot, rpg, rpg.command_main, 7, 1)
                 return
 
-            actualcommand_main = spicemanip(bot, rpg.triggerargsarray, 1) or 0
+            actualcommand_main = spicemanip.main(rpg.triggerargsarray, 1) or 0
             if actualcommand_main not in rpg.gamedict['static']['commands'].keys():  # TODO altcoms
                 errors(bot, rpg, rpg.command_main, 8, str(actualcommand_main))
                 return
@@ -537,7 +537,7 @@ def rpg_command_main_author(bot, rpg):
 def rpg_command_main_intent(bot, rpg):
 
     # Who is the target
-    target = spicemanip(bot, [x for x in rpg.triggerargsarray if x in rpg.gamedict["users"]['users_all']], 1) or rpg.instigator
+    target = spicemanip.main([x for x in rpg.triggerargsarray if x in rpg.gamedict["users"]['users_all']], 1) or rpg.instigator
 
     osd(bot, rpg.channel_current, 'say', "The intent is to provide " + target + " with a sense of pride and accomplishment...")
 
@@ -563,10 +563,10 @@ def rpg_command_main_docs(bot, rpg):  # TODO
 def rpg_command_main_usage(bot, rpg):  # TODO
 
     # Get The Command Used
-    subcommand = spicemanip(bot, [x for x in rpg.triggerargsarray if x in rpg.gamedict['static']['commands'].keys()], 1) or 'total'
+    subcommand = spicemanip.main([x for x in rpg.triggerargsarray if x in rpg.gamedict['static']['commands'].keys()], 1) or 'total'
 
     # Who is the target
-    target = spicemanip(bot, [x for x in rpg.triggerargsarray if x in rpg.gamedict["users"]['users_all'] or x == 'channel'], 1) or rpg.instigator
+    target = spicemanip.main([x for x in rpg.triggerargsarray if x in rpg.gamedict["users"]['users_all'] or x == 'channel'], 1) or rpg.instigator
     targetname = target
     if target == 'channel':
         target = 'rpg_game_records'
@@ -661,8 +661,8 @@ def find_switch_equal(bot, inputarray, switch):
                     continue
         if finishmark != 0:
             exitoutputrange = str(str(beguinemark) + "^" + str(finishmark))
-            exitoutput = spicemanip(bot, inputarray, exitoutputrange)
-            exitoutput = spicemanip(bot, exitoutput, 0)  # new
+            exitoutput = spicemanip.main(inputarray, exitoutputrange)
+            exitoutput = spicemanip.main(exitoutput, 0)  # new
             # exitoutput = exitoutput.replace("-"+switch+'=', ' ')
             # exitoutput = exitoutput.replace('"', '')
             # exitoutput = exitoutput.strip()
@@ -726,13 +726,13 @@ def rpg_errors_end(bot, rpg):
             current_error_number = i + 1
             currenterrorvalue = eval("rpg.errors." + error_type.lower() + str(current_error_number)) or []
             if currenterrorvalue != []:
-                errormessage = spicemanip(bot, rpg.gamedict['static']['errors'][error_type.lower()], current_error_number)
+                errormessage = spicemanip.main(rpg.gamedict['static']['errors'][error_type.lower()], current_error_number)
                 if error_type in rpg.gamedict['static']['commands'].keys():
                     errormessage = str("[" + str(error_type.title()) + "] " + errormessage)
                 totalnumber = len(currenterrorvalue)
                 errormessage = str("(" + str(totalnumber) + ") " + errormessage)
                 if "$list" in errormessage:
-                    errorlist = spicemanip(bot, currenterrorvalue, 'list')
+                    errorlist = spicemanip.main(currenterrorvalue, 'list')
                     errormessage = str(errormessage.replace("$list", errorlist))
                 if "$tiers_nums_peppers" in errormessage:
                     numberarray, pepperarray, combinedarray = [], [], []
@@ -743,32 +743,32 @@ def rpg_errors_end(bot, rpg):
                         numberarray.append(numbereval)
                     for num, pepp in zip(numberarray, pepperarray):
                         combinedarray.append(str(num) + " " + pepp)
-                    errorlist = spicemanip(bot, combinedarray, 'list')
+                    errorlist = spicemanip.main(combinedarray, 'list')
                     errormessage = str(errormessage.replace("$tiers_nums_peppers", errorlist))
                 if "$valid_coms" in errormessage:
-                    validcomslist = spicemanip(bot, rpg.gamedict['static']['commands'].keys(), 'list')
+                    validcomslist = spicemanip.main(rpg.gamedict['static']['commands'].keys(), 'list')
                     errormessage = str(errormessage.replace("$valid_coms", validcomslist))
                 if "$game_chans" in errormessage:
-                    gamechanlist = spicemanip(bot, rpg.gamedict['channels']['game_enabled'], 'list')
+                    gamechanlist = spicemanip.main(rpg.gamedict['channels']['game_enabled'], 'list')
                     errormessage = str(errormessage.replace("$game_chans", gamechanlist))
                 if "$valid_channels" in errormessage:
-                    validchanlist = spicemanip(bot, rpg.gamedict["tempvals"]['channels_list'], 'list')
+                    validchanlist = spicemanip.main(rpg.gamedict["tempvals"]['channels_list'], 'list')
                     errormessage = str(errormessage.replace("$valid_channels", validchanlist))
                 if "$valid_onoff" in errormessage:
-                    validtogglelist = spicemanip(bot, onoff_list, 'list')
+                    validtogglelist = spicemanip.main(onoff_list, 'list')
                     errormessage = str(errormessage.replace("$valid_onoff", validtogglelist))
                 if "$valid_subcoms" in errormessage:
                     subcommand_valid = rpg.gamedict['static']['commands'][error_type.lower()]['subcommands_valid'].keys()
-                    subcommand_valid = spicemanip(bot, subcommand_valid, 'list')
+                    subcommand_valid = spicemanip.main(subcommand_valid, 'list')
                     errormessage = str(errormessage.replace("$valid_subcoms", subcommand_valid))
                 if "$valid_game_change" in errormessage:
-                    subcommand_arg_valid = spicemanip(bot, rpg.gamedict['static']['commands'][rpg.command_main.lower()]['subcommands_valid']['channel'].keys(), 'list')
+                    subcommand_arg_valid = spicemanip.main(rpg.gamedict['static']['commands'][rpg.command_main.lower()]['subcommands_valid']['channel'].keys(), 'list')
                     errormessage = str(errormessage.replace("$valid_game_change", subcommand_arg_valid))
                 if "$dev_chans" in errormessage:
-                    devchans = spicemanip(bot, rpg.gamedict['channels']['devmode_enabled'], 'list')
+                    devchans = spicemanip.main(rpg.gamedict['channels']['devmode_enabled'], 'list')
                     errormessage = str(errormessage.replace("$dev_chans", devchans))
                 if "$game_chans" in errormessage:
-                    gamechans = spicemanip(bot, rpg.gamedict['channels']['game_enabled'], 'list')
+                    gamechans = spicemanip.main(rpg.gamedict['channels']['game_enabled'], 'list')
                     errormessage = str(errormessage.replace("$game_chans", gamechans))
                 if "$current_chan" in errormessage:
                     if rpg.channel_real:
@@ -1132,7 +1132,7 @@ Array/List/String Manipulation
 
 
 # Hub
-def spicemanip(bot, inputs, outputtask, output_type='default'):
+def spicemanip.main(inputs, outputtask, output_type='default'):
 
     # TODO 'this*that' or '1*that' replace either all strings matching, or an index value
     # TODO reverse sort z.sort(reverse = True)
