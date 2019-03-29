@@ -70,6 +70,7 @@ def rpg_execute_start(bot, trigger, command_type):
     rpg.messagesid = uuid.uuid4()
     messagelog_start(bot, rpg.messagesid)
 
+    messagelog_error(bot, rpg.messagesid, "test_error1")
     messagelog(bot, rpg.messagesid, trigger.sender, "Testing RPG    command_type=" + command_type + "    messageID=" + str(rpg.messagesid))
 
     rpg = rpg_prerun(bot, trigger, command_type, rpg)
@@ -79,6 +80,11 @@ def rpg_execute_start(bot, trigger, command_type):
         messagelog_error(bot, rpg.messagesid, rpg_run_dict["rpg_run_error"])
     else:
         messagelog(bot, rpg.messagesid, trigger.sender, "All is good to continue running.")
+
+    messagelog_error(bot, rpg.messagesid, "test_error1")
+
+    messagelog_error(bot, rpg.messagesid, "test_error2")
+    messagelog_error(bot, rpg.messagesid, "test_error2")
 
     messagelog_exit(bot, rpg, rpg.messagesid)
 
@@ -140,7 +146,7 @@ def messagelog_error(bot, log_id, error_id):
             newloglist.append(existing_messagedict)
 
     if not error_exists_prior:
-        newmessagedict = {"type": "error", "error_id": error_id, "count": 1, "recipient": "error"}
+        newmessagedict = {"type": "error", "error_id": error_id, "count": 1}
         newloglist.append(newmessagedict)
 
     bot.memory['rpg']['message_display'][log_id] = newloglist
@@ -168,7 +174,7 @@ def messagelog_exit(bot, rpg, log_id):
         if not isinstance(message, list):
             message = [message]
         for entry in message:
-            if messagedict["recipient"] == 'error':
+            if messagedict["type"] == 'error':
                 bot.notice(entry, rpg.instigator)
             else:
                 bot.say(entry, messagedict["recipient"])
