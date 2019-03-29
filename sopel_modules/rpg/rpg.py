@@ -44,6 +44,8 @@ def rpg_execute_start(bot, trigger, command_type):
 
     bot.say("Testing RPG    command_type=" + command_type)
 
+    bot.say(str(bot.channels))
+
     # Create dynamic class
     rpg = class_create('rpg')
     rpg.default = 'rpg'
@@ -84,9 +86,12 @@ def rpg_prerun(bot, trigger, command_type, rpg):
 
 
 def rpg_run_check(bot, rpg):
+
     rpg_run_dict = {"rpg_run_error": None}
+
     if rpg.channel_priv:
         rpg_run_dict["rpg_run_error"] = "Cannot run in private message!"
+
     return rpg_run_dict
 
 
