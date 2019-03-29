@@ -24,14 +24,7 @@ Triggers for usage
 
 # Base command
 @module.commands('rpg')
-def rpg_trigger_normal(bot, trigger):
-    execute_start(bot, trigger, str(current_function()).split("rpg_trigger_")[-1])
-
-
-# work with /me ACTION
-@module.rule('^(?:challenges|(?:fi(?:ght|te)|duel)s(?:\s+with)?)\s+([a-zA-Z0-9\[\]\\`_\^\{\|\}-]{1,32}).*')
-@module.intent('ACTION')
-def rpg_trigger_action(bot, trigger):
+def rpg_trigger_module_command(bot, trigger):
     execute_start(bot, trigger, str(current_function()).split("rpg_trigger_")[-1])
 
 
@@ -66,11 +59,19 @@ RPG Dynamic Classes
 
 def rpg_prerun(bot, trigger, command_type, rpg):
 
+    rpg.command_type = command_type
+
     rpg.triggerargs = []
 
     if len(trigger.args) > 1:
         rpg.triggerargs = spicemanip.main(trigger.args[1], 'create')
     rpg.triggerargs = spicemanip.main(rpg.triggerargs, 'create')
+
+    if rpg.command_type in ['module_command']:
+        rpg.triggerargs = spicemanip.main(rpg.triggerargs, '2+')
+    elif rpg.command_type in ['nick_command']:
+        rpg.triggerargs = spicemanip.main(rpg.triggerargs, '3+')
+
     bot.say(str(rpg.triggerargs))
 
     return rpg
