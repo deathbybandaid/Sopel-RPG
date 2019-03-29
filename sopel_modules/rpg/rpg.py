@@ -2,9 +2,11 @@
 
 from __future__ import unicode_literals, absolute_import, division, print_function
 
+# pylama:ignore=W,E201,E202,E203,E221,E222,w292,E231
+
 from sopel import module
 
-# from .rpg_errors import *
+from .errormessages import *
 
 import spicemanip
 import sys
@@ -31,6 +33,8 @@ def setup(bot):
             if bot.memory['rpg']['channel_settings'][str(channel).lower()]['game_enabled']:
                 dd = 5
 
+    bot.memory['rpg']['message_display'] = dict()
+
 
 """
 Triggers for usage
@@ -39,12 +43,14 @@ Triggers for usage
 
 # Base command
 @module.commands('rpg')
+@module.thread(True)
 def rpg_trigger_module_command(bot, trigger):
     rpg_execute_start(bot, trigger, str(current_function()).split("rpg_trigger_")[-1])
 
 
 # bot.nick do this
 @module.nickname_commands('rpg')
+@module.thread(True)
 def rpg_trigger_nickname_command(bot, trigger):
     rpg_execute_start(bot, trigger, str(current_function()).split("rpg_trigger_")[-1])
 
@@ -56,16 +62,17 @@ Command Processing
 
 def rpg_execute_start(bot, trigger, command_type):
 
-    bot.say("Testing RPG    command_type=" + command_type)
-
     # Create dynamic class
     rpg = class_create('rpg')
     rpg.default = 'rpg'
 
-    rpg.uniqueid = uuid.uuid4()
-    bot.say("your unique ID is " + str(rpg.uniqueid))
+    # Log unique ID for text processing
+    rpg.messagesid = uuid.uuid4()
+    messagelog_start(bot, rpg.messagesid)
 
-    bot.say("prerun time")
+    messagelog(bot, rpg.messagesid, trigger.sender, "Testing RPG    command_type=" + command_type)
+
+    messagelog(bot, rpg.messagesid, trigger.sender, "your unique ID is " + str(rpg.messagesid))
 
     rpg = rpg_prerun(bot, trigger, command_type, rpg)
 
@@ -74,6 +81,8 @@ def rpg_execute_start(bot, trigger, command_type):
         bot.say(rpg_run_dict["rpg_run_error"])
     else:
         bot.say("All is good to continue running.")
+
+    messagelog_exit(bot, rpg, rpg.messagesid)
 
 
 """
@@ -111,6 +120,61 @@ def rpg_run_check(bot, rpg):
 
 
 """
+RPG Message Handling
+"""
+
+
+def messagelog_start(bot, log_id):
+
+    bot.memory['rpg']['message_display'][log_id] = []
+
+
+def messagelog_error(bot, log_id, error_id):
+
+    messagedict = {"type": "error", "error_id": error_id "count": 0, "recipient": "error"}
+
+    newloglist = []
+    for existing_messagedict in bot.memory['rpg']['message_display'][log_id]:
+        if existing_messagedict["type"] == "error":
+            if existing_messagedict["error_id"] == error_id:
+                existing_messagedict["count"] += 1
+        newloglist.append(existing_messagedict)
+
+    bot.memory['rpg']['message_display'][log_id] = []
+    bot.memory['rpg']['message_display'][log_id].extend(newloglist)
+
+
+def messagelog(bot, log_id, recipient, message):
+
+    messagedict = {"type": "normal", "message": message, "recipient": recipient}
+
+    bot.memory['rpg']['message_display'][log_id].append(messagedict)
+
+
+def messagelog_exit(bot, rpg, log_id):
+
+    for messagedict in bot.memory['rpg']['message_display'][log_id]:
+        if messagedict["type"] == "error":
+            if messagedict["error_id"] not in error_message_dict.keys():
+                message = "Error missing for ID '" + str(messagedict["error_id"]) + "'"
+            else:
+                message = error_message_dict[messagedict["error_id"]] + str(messagedict["count"])
+            message += " (" + str(messagedict["count"]) + ")"
+        else:
+            message = messagedict["message"]
+
+        if not isinstance(message, list):
+            message = [message]
+        for entry in message:
+            if messagedict["recipient"] == 'error':
+                bot.notice(entry, rpg.instigator)
+            else:
+                bot.say(entry, messagedict["recipient"])
+
+    del bot.memory['rpg']['message_display'][log_id]
+
+
+"""
 RPG Dynamic Classes
 """
 
@@ -137,7 +201,7 @@ def class_create(classname):
 
 
 """
-Sopel Triggerargs list handling
+Functions that wrap around Sopel
 """
 
 
