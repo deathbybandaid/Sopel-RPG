@@ -61,6 +61,10 @@ Command Processing
 
 def rpg_execute_start(bot, trigger, command_type):
 
+    startupdebug = ["Testing RPG"]
+
+    startupdebug.append("command_type=" + command_type)
+
     # Create dynamic class
     rpg = class_create('rpg')
     rpg.default = 'rpg'
@@ -70,7 +74,8 @@ def rpg_execute_start(bot, trigger, command_type):
     messagelog_start(bot, rpg.messagesid)
 
     messagelog_error(bot, rpg.messagesid, "test_error1")
-    messagelog(bot, rpg.messagesid, trigger.sender, ["Testing RPG", "command_type=" + command_type, + "messageID=" + str(rpg.messagesid)])
+    startupdebug.append("messageID=" + str(rpg.messagesid))
+    messagelog(bot, rpg.messagesid, trigger.sender, startupdebug)
 
     rpg = rpg_prerun(bot, trigger, command_type, rpg)
 
