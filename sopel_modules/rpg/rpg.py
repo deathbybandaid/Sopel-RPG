@@ -61,9 +61,12 @@ def rpg_prerun(bot, trigger, command_type, rpg):
 
     rpg.command_type = command_type
 
-    rpg.channel = trigger.args[0]
-    bot.say(rpg.channel)
-    bot.say(trigger.sender)
+    rpg.instigator = trigger.nick
+
+    rpg.channel_triggered = trigger.args[0]
+    rpg.channel_replyto = trigger.sender
+    rpg.channel_priv = is_privmsg
+    bot.say(str(rpg.channel_priv))
 
     rpg.triggerargs = []
 
