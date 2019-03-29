@@ -25,11 +25,7 @@ Triggers for usage
 # Base command
 @module.commands('rpg')
 def rpg_trigger_normal(bot, trigger):
-    command_type = str(current_function()).split("rpg_trigger_")[-1]
-    bot.say(command_type)
-    bot.say("testing update command")
-    triggerargsarray = spicemanip.main(trigger.group(2), 'create')
-    execute_start(bot, trigger, triggerargsarray, command_type)
+    execute_start(bot, trigger, str(current_function()).split("rpg_trigger_")[-1])
 
 
 """
@@ -37,9 +33,14 @@ Command Processing
 """
 
 
-def execute_start(bot, trigger, triggerargsarray, command_type):
+def execute_start(bot, trigger, command_type):
 
     bot.say("loading a test of rpg")
+
+    # triggerargsarray = spicemanip.main(trigger.group(2), 'create')
+
+    bot.say(str(trigger.args))
+    bot.say(str(trigger))
 
 
 """
