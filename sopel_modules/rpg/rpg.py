@@ -131,7 +131,7 @@ def messagelog_start(bot, log_id):
 
 def messagelog_error(bot, log_id, error_id):
 
-    messagedict = {"type": "error", "error_id": error_id "count": 0, "recipient": "error"}
+    messagedict = {"type": "error", "error_id": error_id, "count": 0, "recipient": "error"}
 
     newloglist = []
     for existing_messagedict in bot.memory['rpg']['message_display'][log_id]:
