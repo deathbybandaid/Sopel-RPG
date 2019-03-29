@@ -25,8 +25,8 @@ Triggers for usage
 # Base command
 @module.commands('rpg')
 def rpg_trigger_normal(bot, trigger):
-    bot.say(str(whoami()))
-    command_type = 'normalcom'
+    command_type = str(current_function()).split("rpg_trigger_")[-1]
+    bot.say(command_type)
     triggerargsarray = spicemanip.main(trigger.group(2), 'create')
     execute_start(bot, trigger, triggerargsarray, command_type)
 
@@ -46,5 +46,5 @@ Other Python Functions
 """
 
 
-def whoami():
+def current_function():
     return inspect.stack()[1][3]
