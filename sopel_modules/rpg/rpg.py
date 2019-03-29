@@ -69,6 +69,8 @@ def rpg_prerun(bot, trigger, command_type, rpg):
 
     rpg.triggerargs = sopel_triggerargs(bot, trigger, command_type)
 
+    bot.say(str(rpg.triggerargs))
+
     return rpg
 
 
