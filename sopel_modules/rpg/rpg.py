@@ -160,7 +160,7 @@ def messagelog_exit(bot, rpg, log_id):
             if messagedict["error_id"] not in error_message_dict.keys():
                 message = "Error missing for ID '" + str(messagedict["error_id"]) + "'"
             else:
-                message = error_message_dict[messagedict["error_id"]] + str(messagedict["count"])
+                message = error_message_dict[messagedict["error_id"]]
             message += " (" + str(messagedict["count"]) + ")"
         else:
             message = messagedict["message"]
