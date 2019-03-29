@@ -76,7 +76,6 @@ def rpg_execute_start(bot, trigger, command_type):
 
     rpg_run_dict = rpg_run_check(bot, rpg)
     if rpg_run_dict["rpg_run_error"]:
-        bot.say("here")
         messagelog_error(bot, rpg.messagesid, rpg_run_dict["rpg_run_error"])
     else:
         messagelog(bot, rpg.messagesid, trigger.sender, "All is good to continue running.")
@@ -129,16 +128,20 @@ def messagelog_start(bot, log_id):
 def messagelog_error(bot, log_id, error_id):
 
     newloglist = []
+    error_exists_prior = False
+
     for existing_messagedict in bot.memory['rpg']['message_display'][log_id]:
         if existing_messagedict["type"] == "error":
             if existing_messagedict["error_id"] == error_id:
                 existing_messagedict["count"] += 1
+                error_exists_prior = True
                 newloglist.append(existing_messagedict)
-            else:
-                newmessagedict = {"type": "error", "error_id": error_id, "count": 1, "recipient": "error"}
-                newloglist.append(newmessagedict)
         else:
             newloglist.append(existing_messagedict)
+
+    if not error_exists_prior:
+        newmessagedict = {"type": "error", "error_id": error_id, "count": 1, "recipient": "error"}
+        newloglist.append(newmessagedict)
 
     bot.memory['rpg']['message_display'][log_id] = newloglist
 
