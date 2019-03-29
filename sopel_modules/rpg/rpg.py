@@ -61,6 +61,9 @@ def rpg_prerun(bot, trigger, command_type, rpg):
 
     rpg.command_type = command_type
 
+    rpg.channel = trigger.args[0]
+    bot.say(rpg.channel)
+
     rpg.triggerargs = []
 
     if len(trigger.args) > 1:
