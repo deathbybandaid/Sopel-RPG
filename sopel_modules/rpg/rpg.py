@@ -78,9 +78,9 @@ def rpg_execute_start(bot, trigger, command_type):
 
     rpg_run_dict = rpg_run_check(bot, rpg)
     if rpg_run_dict["rpg_run_error"]:
-        bot.say(rpg_run_dict["rpg_run_error"])
+        messagelog_error(bot, rpg.messagesid, rpg_run_dict["rpg_run_error"])
     else:
-        bot.say("All is good to continue running.")
+        messagelog(bot, rpg.messagesid, trigger.sender, "All is good to continue running.")
 
     messagelog_exit(bot, rpg, rpg.messagesid)
 
@@ -114,7 +114,7 @@ def rpg_run_check(bot, rpg):
     rpg_run_dict = {"rpg_run_error": None}
 
     if rpg.channel_priv:
-        rpg_run_dict["rpg_run_error"] = "Cannot run in private message!"
+        rpg_run_dict["rpg_run_error"] = "privmsg_no"
 
     return rpg_run_dict
 
