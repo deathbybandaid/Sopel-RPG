@@ -192,40 +192,42 @@ On Screen Text
 """
 
 
-def osd_new(bot, recipients, text_type, messages):
-
-    messagedict = dict()
+def osd(bot, recipients, text_type, messages):
 
     if not isinstance(messages, list):
-        text_array = [messages]
+        messages = [messages]
 
     if not isinstance(recipients, list):
         recipients = [recipients]
-    recipientslist = []
+    recipients = ','.join(str(x) for x in recipients)
 
-    for recipient in recipients:
-        if recipient not in recipientslist:
-            recipientslist.append(recipient)
+    # process content to be said to not exceed 420 characters per line
+    messages_refactor = []
+    currentstring = None
+    for message in messages:
+        tempstring = currentstring + " " + message
+        if not currentstring:
+            currentstring = message
+        elif len(tempstring) <= 420:
+            currentstring = tempstring
+        else:
+            messages_refactor.append(currentstring)
+            currentstring = message
+    if currentstring:
+        messages_refactor.append(currentstring)
 
-    for recipient in recipientslist:
-
-        if text_type == 'say' and not str(recipient).startswith("#"):
-            text_type = 'notice'
-
-        messagedict[recipient]["messages"] = temptext
-        messagedict[recipient]["type"] = text_type
-
-    for recipient in messagedict.keys():
-
-        # process content to be said to not exceed 420 characters per line
-        currentstring = ''
-        for message in messagedict[recipient]["messages"]:
-            tempstring = currentstring + message
-            if len(tempstring) > 420:
-                dd = 5
+    # display
+    for combinedline in messages_refactor:
+        if text_type == 'action':
+            bot.action(combinedline, recipients)
+            text_type = 'say'
+        elif text_type == 'notice':
+            bot.notice(combinedline, recipients)
+        else:
+            bot.say(combinedline, recipients)
 
 
-def osd(bot, target_array, text_type_array, text_array):
+def osd_old(bot, target_array, text_type_array, text_array):
 
     # if text_array is a string, make it an array
     textarraycomplete = []
