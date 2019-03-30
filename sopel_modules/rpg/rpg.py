@@ -205,11 +205,10 @@ def osd(bot, recipients, text_type, messages):
     messages_refactor = []
     currentstring = None
     for message in messages:
-        tempstring = currentstring + " " + message
         if not currentstring:
             currentstring = message
-        elif len(tempstring) <= 420:
-            currentstring = tempstring
+        elif len(currentstring + " " + message) <= 420:
+            currentstring = currentstring + " " + message
         else:
             messages_refactor.append(currentstring)
             currentstring = message
