@@ -62,6 +62,13 @@ Command Processing
 
 def rpg_execute_start(bot, trigger, command_type):
 
+    listconvert = ['deathbybandaid','deathbybandaid_']
+
+    testlistcon = spicemanip.main(listconvert, 'list_nospace')
+    bot.say("testing a " + testlistcon)
+    bot.say("testing b " + testlistcon, testlistcon)
+    return
+
     startupdebug = ["Testing RPG"]
 
     startupdebug.append("command_type=" + command_type)
@@ -191,7 +198,6 @@ On Screen Text
 """
 
 
-"""
 def osd_new(bot, recipients, text_type, messages):
 
     messagedict = dict()
@@ -202,20 +208,12 @@ def osd_new(bot, recipients, text_type, messages):
     if not isinstance(recipients, list):
         recipients = [recipients]
     recipientslist = []
+
     for recipient in recipients:
         if recipient not in recipientslist:
             recipientslist.append(recipient)
-    for recipient in recipientslist:
-        messagedict[recipient] = dict()
-
-    if not isinstance(text_types, list):
-        text_types = [text_types]
 
     for recipient in recipientslist:
-        temptext = copy.deepcopy(messages)
-
-        if text_type == 'notice':
-            temptext.insert(0, recipient + ", ")
 
         if text_type == 'say' and not str(recipient).startswith("#"):
             text_type = 'notice'
@@ -223,8 +221,14 @@ def osd_new(bot, recipients, text_type, messages):
         messagedict[recipient]["messages"] = temptext
         messagedict[recipient]["type"] = text_type
 
-    return text_array
-"""
+    for recipient in messagedict.keys():
+
+        # process content to be said to not exceed 420 characters per line
+        currentstring = ''
+        for message in messagedict[recipient]["messages"]:
+            tempstring = currentstring + message
+            if len(tempstring) > 420:
+                dd = 5
 
 
 def osd(bot, target_array, text_type_array, text_array):
