@@ -63,13 +63,6 @@ Command Processing
 
 def rpg_execute_start(bot, trigger, command_type):
 
-    listconvert = ['deathbybandaid','deathbybandaid_']
-
-    testlistcon = spicemanip.main(listconvert, 'list_nospace')
-    bot.say("testing a " + testlistcon)
-    bot.say("testing b " + testlistcon, testlistcon)
-    return
-
     startupdebug = ["Testing RPG"]
 
     startupdebug.append("command_type=" + command_type)
