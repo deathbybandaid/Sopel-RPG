@@ -207,8 +207,8 @@ def osd(bot, recipients, text_type, messages):
     for message in messages:
         if not currentstring:
             currentstring = message
-        elif len(currentstring + " " + message) <= 420:
-            currentstring = currentstring + " " + message
+        elif len(currentstring + "   " + message) <= 420:
+            currentstring = currentstring + "   " + message
         else:
             messages_refactor.append(currentstring)
             currentstring = message
