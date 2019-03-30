@@ -169,20 +169,35 @@ def messagelog(bot, log_id, recipients, message):
 
 def messagelog_exit(bot, rpg, log_id):
 
+    current_messages = []
+    current_errors = []
+
     for messagedict in bot.memory['rpg']['message_display'][log_id]:
+
         if messagedict["type"] == "error":
             if messagedict["error_id"] not in error_message_dict.keys():
                 message = "Error missing for ID '" + str(messagedict["error_id"]) + "'"
             else:
                 message = error_message_dict[messagedict["error_id"]]
             message += " (" + str(messagedict["count"]) + ")"
+            current_errors.append(message)
         else:
+            if current_errors != []:
+                currenterrordict = {"type": "error", "message": current_errors}
+                current_messages.append(currenterrordict)
+                current_errors = []
             message = messagedict["message"]
+            current_messages.append(messagedict)
+    if current_errors != []:
+        currenterrordict = {"type": "error", "message": current_errors}
+        current_messages.append(currenterrordict)
+        current_errors = []
 
+    for messagedict in current_messages:
         if messagedict["type"] == 'error':
-            osd(bot, rpg.instigator, 'notice', message)
+            osd(bot, rpg.instigator, 'notice', messagedict['message'])
         else:
-            osd(bot, messagedict["recipients"], 'say', message)
+            osd(bot, messagedict["recipients"], 'say', messagedict['message'])
 
     del bot.memory['rpg']['message_display'][log_id]
 
