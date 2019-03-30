@@ -34,6 +34,7 @@ def setup(bot):
                 dd = 5
 
     bot.memory['rpg']['message_display'] = dict()
+    bot.memory['rpg']['message_display']["used_ids"] = [0]
 
 
 """
@@ -71,7 +72,7 @@ def rpg_execute_start(bot, trigger, command_type):
     rpg.default = 'rpg'
 
     # Log unique ID for text processing
-    rpg.messagesid = uuid.uuid4()
+    rpg.messagesid = unique_id_create(bot)
     messagelog_start(bot, rpg.messagesid)
 
     rpg = rpg_prerun(bot, trigger, command_type, rpg)
@@ -420,5 +421,9 @@ Other Python Functions
 """
 
 
-def current_function():
-    return inspect.stack()[1][3]
+def unique_id_create(bot):
+    unique_id = 0
+    while unique_id in bot.memory['rpg']['message_display']["used_ids"]:
+        unique_id = uuid.uuid4()
+    bot.memory['rpg']['message_display']["used_ids"].append(unique_id)
+    return unique_id
