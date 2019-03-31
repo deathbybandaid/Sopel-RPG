@@ -241,7 +241,7 @@ def osd(bot, recipients, text_type, messages):
 
     # display
     for combinedline in messages_refactor:
-        bot.notice(str(utf8len(s)), 'deathbybandaid')
+        bot.notice(str(utf8len(combinedline)), 'deathbybandaid')
         if text_type == 'action':
             bot.action(combinedline, recipients)
             text_type = 'say'
