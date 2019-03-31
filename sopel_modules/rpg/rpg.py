@@ -13,6 +13,7 @@ import sys
 import time
 import uuid
 import copy
+import struct
 
 
 def configure(config):
@@ -241,7 +242,7 @@ def osd(bot, recipients, text_type, messages):
 
     # display
     for combinedline in messages_refactor:
-        bot.notice(str(utf8len(combinedline)), 'deathbybandaid')
+        bot.notice(str(bytecount(combinedline)), 'deathbybandaid')
         if text_type == 'action':
             bot.action(combinedline, recipients)
             text_type = 'say'
@@ -331,6 +332,7 @@ def unique_id_create(bot):
     return unique_id
 
 
-def utf8len(s):
+def bytecount(s):
+    return struct.calcsize(s)
     return bytes(s, 'UTF-8')
     return len(s.encode('utf-8'))
