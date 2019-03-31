@@ -13,7 +13,6 @@ import sys
 import time
 import uuid
 import copy
-import struct
 
 
 def configure(config):
@@ -333,6 +332,5 @@ def unique_id_create(bot):
 
 
 def bytecount(s):
-    return struct.calcsize(s)
-    return bytes(s, 'UTF-8')
+    return sys.getsizeof(s)
     return len(s.encode('utf-8'))
