@@ -237,6 +237,7 @@ def osd(bot, recipients, text_type, messages):
                     messages_refactor[-1] = messages_refactor[-1] + " " + chunk
                 else:
                     messages_refactor.append(chunk)
+            chunknum += 1
 
     # display
     for combinedline in messages_refactor:
