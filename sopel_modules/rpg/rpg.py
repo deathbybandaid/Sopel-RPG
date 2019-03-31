@@ -332,4 +332,5 @@ def unique_id_create(bot):
 
 
 def utf8len(s):
+    return bytes(s, 'UTF-8')
     return len(s.encode('utf-8'))
