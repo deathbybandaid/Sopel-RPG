@@ -222,6 +222,15 @@ def osd(bot, recipients, text_type, messages):
     for message in messages:
         if not currentstring:
             currentstring = message
+        # elif len(message) > 420:
+        #    chunks = textstring.split()
+        #    tempchunk = ''
+        #    for chunk in chunks:
+        #        if len(currentstring + "   " + tempchunk) <= 420:
+        #
+        #    while not len(currentstring + "   " + tempchunk) > 420:
+        #        tempchunk
+        #
         elif len(currentstring + "   " + message) <= 420:
             currentstring = currentstring + "   " + message
         else:
@@ -232,6 +241,7 @@ def osd(bot, recipients, text_type, messages):
 
     # display
     for combinedline in messages_refactor:
+        bot.notice(str(utf8len(s)), 'deathbybandaid')
         if text_type == 'action':
             bot.action(combinedline, recipients)
             text_type = 'say'
@@ -319,3 +329,7 @@ def unique_id_create(bot):
         unique_id = uuid.uuid4()
     bot.memory['rpg']['message_display']["used_ids"].append(unique_id)
     return unique_id
+
+
+def utf8len(s):
+    return len(s.encode('utf-8'))
