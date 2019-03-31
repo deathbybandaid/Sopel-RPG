@@ -230,7 +230,7 @@ def osd(bot, recipients, text_type, messages):
     for message in messages:
         if not currentstring and not bytecount(message) > available_bytes:
             currentstring = message
-        elif (bytecount(message) + transfer_bytes) > available_bytes:
+        # elif (bytecount(message) + transfer_bytes) > available_bytes:
             # chunks = message.split()
             # firstchunk = chunks[0]
             # del chunks[0]
@@ -242,7 +242,6 @@ def osd(bot, recipients, text_type, messages):
             #    elif not bytecount(tempchunkstring) + bytecount(chunk) <= available_bytes:
             #        tempchunkstring += " " + chunk
             #    else:
-
 
         #    chunks = textstring.split()
         #    tempchunk = ''
