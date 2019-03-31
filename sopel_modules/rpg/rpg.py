@@ -216,13 +216,34 @@ def osd(bot, recipients, text_type, messages):
         recipients = [recipients]
     recipients = ','.join(str(x) for x in recipients)
 
+    # Count all Transfer bytes
+    transfer_bytes = 0
+    transfer_bytes += bytecount(recipients)
+    transfer_bytes += bytecount(bot.nick)
+    transfer_bytes += 25
+    available_bytes = 512 - transfer_bytes
+    bot.say(str(available_bytes), "deathbybandaid")
+
     # process content to be said to not exceed 420 characters per line
     messages_refactor = []
     currentstring = None
     for message in messages:
-        if not currentstring:
+        if not currentstring and not bytecount(message) > available_bytes:
             currentstring = message
-        # elif len(message) > 420:
+        elif (bytecount(message) + transfer_bytes) > available_bytes:
+            # chunks = message.split()
+            # firstchunk = chunks[0]
+            # del chunks[0]
+            # chunks.insert(0, firstchunk)
+            # tempchunkstring = None
+            # for chunk in chunks:
+            #    if not tempchunkstring and not bytecount(chunk) > available_bytes:
+            #        tempchunkstring = chunk
+            #    elif not bytecount(tempchunkstring) + bytecount(chunk) <= available_bytes:
+            #        tempchunkstring += " " + chunk
+            #    else:
+
+
         #    chunks = textstring.split()
         #    tempchunk = ''
         #    for chunk in chunks:
@@ -231,8 +252,8 @@ def osd(bot, recipients, text_type, messages):
         #    while not len(currentstring + "   " + tempchunk) > 420:
         #        tempchunk
         #
-        elif len(currentstring + "   " + message) <= 420:
-            currentstring = currentstring + "   " + message
+        elif bytecount(currentstring + "   " + message) <= available_bytes:
+                currentstring = currentstring + "   " + message
         else:
             messages_refactor.append(currentstring)
             currentstring = message
@@ -241,7 +262,6 @@ def osd(bot, recipients, text_type, messages):
 
     # display
     for combinedline in messages_refactor:
-        bot.notice(str(bytecount(combinedline)), 'deathbybandaid')
         if text_type == 'action':
             bot.action(combinedline, recipients)
             text_type = 'say'
