@@ -223,16 +223,28 @@ def osd(bot, recipients, text_type, messages):
         for chunk in chunks:
             if not chunknum:
                 if messages_refactor[-1] == '':
-                    messages_refactor.append(chunk)
+                    if len(chunk) <= 420:
+                        messages_refactor[-1] = chunk
+                    else:
+                        chunksplit = map(''.join, zip(*[iter(chunk)]*420))
+                        messages_refactor.extend(chunksplit)
                 elif len(messages_refactor[-1] + "   " + chunk) <= 420:
                     messages_refactor[-1] = messages_refactor[-1] + "   " + chunk
                 else:
-                    messages_refactor.append(chunk)
+                    if len(chunk) <= 420:
+                        messages_refactor.append(chunk)
+                    else:
+                        chunksplit = map(''.join, zip(*[iter(chunk)]*420))
+                        messages_refactor.extend(chunksplit)
             else:
                 if len(messages_refactor[-1] + " " + chunk) <= 420:
                     messages_refactor[-1] = messages_refactor[-1] + " " + chunk
                 else:
-                    messages_refactor.append(chunk)
+                    if len(chunk) <= 420:
+                        messages_refactor.append(chunk)
+                    else:
+                        chunksplit = map(''.join, zip(*[iter(chunk)]*420))
+                        messages_refactor.extend(chunksplit)
             chunknum += 1
 
     for combinedline in messages_refactor:
