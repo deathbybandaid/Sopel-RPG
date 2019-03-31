@@ -217,47 +217,26 @@ def osd(bot, recipients, text_type, messages):
     recipients = ','.join(str(x) for x in recipients)
 
     # Count all Transfer bytes
-    transfer_bytes = 0
-    transfer_bytes += bytecount(recipients)
-    transfer_bytes += bytecount(bot.nick)
-    transfer_bytes += 25
-    available_bytes = 512 - transfer_bytes
-    bot.say(str(available_bytes), "deathbybandaid")
+    available_bytes = 512
+    available_bytes -= bytecount(recipients)
+    available_bytes -= bytecount(bot.nick)
+    available_bytes -= 25
 
-    # process content to be said to not exceed 420 characters per line
-    messages_refactor = []
-    currentstring = None
+    messages_refactor = ['']
     for message in messages:
-        if not currentstring and not bytecount(message) > available_bytes:
-            currentstring = message
-        # elif (bytecount(message) + transfer_bytes) > available_bytes:
-            # chunks = message.split()
-            # firstchunk = chunks[0]
-            # del chunks[0]
-            # chunks.insert(0, firstchunk)
-            # tempchunkstring = None
-            # for chunk in chunks:
-            #    if not tempchunkstring and not bytecount(chunk) > available_bytes:
-            #        tempchunkstring = chunk
-            #    elif not bytecount(tempchunkstring) + bytecount(chunk) <= available_bytes:
-            #        tempchunkstring += " " + chunk
-            #    else:
-
-        #    chunks = textstring.split()
-        #    tempchunk = ''
-        #    for chunk in chunks:
-        #        if len(currentstring + "   " + tempchunk) <= 420:
-        #
-        #    while not len(currentstring + "   " + tempchunk) > 420:
-        #        tempchunk
-        #
-        elif bytecount(currentstring + "   " + message) <= available_bytes:
-                currentstring = currentstring + "   " + message
-        else:
-            messages_refactor.append(currentstring)
-            currentstring = message
-    if currentstring:
-        messages_refactor.append(currentstring)
+        chunknum = 0
+        chunks = message.split()
+        for chunk in chunks:
+            if not chunknum:
+                if bytecount(messages_refactor[-1] + "   " + chunk) <= available_bytes:
+                    messages_refactor[-1] = messages_refactor[-1] + "   " + chunk
+                else:
+                    messages_refactor.append(chunk)
+            else:
+                if bytecount(messages_refactor[-1] + " " + chunk) <= available_bytes:
+                    messages_refactor[-1] = messages_refactor[-1] + " " + chunk
+                else:
+                    messages_refactor.append(chunk)
 
     # display
     for combinedline in messages_refactor:
