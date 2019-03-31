@@ -216,7 +216,6 @@ def osd(bot, recipients, text_type, messages):
         recipients = [recipients]
     recipients = ','.join(str(x) for x in recipients)
 
-    # Count all Transfer bytes
     available_bytes = 512
     available_bytes -= bytecount(recipients)
     available_bytes -= bytecount(bot.nick)
@@ -228,7 +227,9 @@ def osd(bot, recipients, text_type, messages):
         chunks = message.split()
         for chunk in chunks:
             if not chunknum:
-                if bytecount(messages_refactor[-1] + "   " + chunk) <= available_bytes:
+                if messages_refactor[-1] == '':
+                    messages_refactor.append(chunk)
+                elif bytecount(messages_refactor[-1] + "   " + chunk) <= available_bytes:
                     messages_refactor[-1] = messages_refactor[-1] + "   " + chunk
                 else:
                     messages_refactor.append(chunk)
@@ -239,7 +240,6 @@ def osd(bot, recipients, text_type, messages):
                     messages_refactor.append(chunk)
             chunknum += 1
 
-    # display
     for combinedline in messages_refactor:
         if text_type == 'action':
             bot.action(combinedline, recipients)
