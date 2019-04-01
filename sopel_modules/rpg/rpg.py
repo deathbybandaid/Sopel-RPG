@@ -221,12 +221,12 @@ def osd(bot, recipients, text_type, messages):
         text_type = 'PRIVMSG'
 
     available_bytes = 512
-    line_feed_carriage = 2
+    reserved_irc_bytes = 10
     available_bytes -= len((
                                 ":" + bot.users.get(bot.nick).hostmask + " "
-                                    + text_type + " " + recipients + " :"
+                                    + " " + recipients + " :"
                                     ).encode('utf-8'))
-    available_bytes -= line_feed_carriage
+    available_bytes -= reserved_irc_bytes
 
     messages_refactor = ['']
     for message in messages:
