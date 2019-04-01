@@ -114,7 +114,7 @@ def rpg_prerun(bot, trigger, command_type, rpg):
 
     rpg.channel_triggered = trigger.args[0]
     rpg.channel_replyto = trigger.sender
-    rpg.channel_priv = trigger.is_privmsg
+    rpg.inchannel = trigger.is_privmsg
 
     rpg.triggerargs = sopel_triggerargs(bot, trigger, command_type)
 
@@ -125,7 +125,7 @@ def rpg_run_check(bot, rpg):
 
     rpg_run_dict = {"rpg_run_error": None}
 
-    if rpg.channel_priv:
+    if rpg.inchannel:
         rpg_run_dict["rpg_run_error"] = "privmsg_no"
 
     return rpg_run_dict
@@ -180,6 +180,7 @@ def messagelog_exit(bot, rpg, log_id):
             else:
                 message = error_message_dict[messagedict["error_id"]]
             message += " (" + str(messagedict["count"]) + ")"
+            message = messagelog_fillin(bot, rpg, message)
             current_errors.append(message)
         else:
             if current_errors != []:
@@ -200,6 +201,17 @@ def messagelog_exit(bot, rpg, log_id):
             osd(bot, messagedict["recipients"], 'say', messagedict['message'])
 
     del bot.memory['rpg']['message_display'][log_id]
+
+
+def messagelog_fillin(bot, rpg, message):
+
+    if "$current_chan" in message:
+        if rpg.inchannel:
+            message = str(message.replace("$current_chan", rpg.channel_current))
+        else:
+            message = str(message.replace("$current_chan", 'privmsg'))
+
+    return message
 
 
 """
