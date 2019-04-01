@@ -216,6 +216,18 @@ def osd(bot, recipients, text_type, messages):
         recipients = [recipients]
     recipients = ','.join(str(x) for x in recipients)
 
+    text_type = text_type.upper()
+    if text_type == 'say' or text_type not in ['notice', 'action']:
+        text_type = 'PRIVMSG'
+
+    available_bytes = 512
+    line_feed_carriage = 2
+    available_bytes -= len((
+                                ":" + bot.users.get(bot.nick).hostmask + " "
+                                    + text_type + " " + recipients + " :"
+                                    ).encode('utf-8'))
+    available_bytes -= line_feed_carriage
+
     messages_refactor = ['']
     for message in messages:
         chunknum = 0
@@ -223,35 +235,35 @@ def osd(bot, recipients, text_type, messages):
         for chunk in chunks:
             if not chunknum:
                 if messages_refactor[-1] == '':
-                    if len(chunk) <= 420:
+                    if bytecount(chunk) <= available_bytes:
                         messages_refactor[-1] = chunk
                     else:
-                        chunksplit = map(''.join, zip(*[iter(chunk)]*420))
+                        chunksplit = map(''.join, zip(*[iter(chunk)]*available_bytes))
                         messages_refactor.extend(chunksplit)
-                elif len(messages_refactor[-1] + "   " + chunk) <= 420:
+                elif bytecount(messages_refactor[-1] + "   " + chunk) <= available_bytes:
                     messages_refactor[-1] = messages_refactor[-1] + "   " + chunk
                 else:
-                    if len(chunk) <= 420:
+                    if bytecount(chunk) <= available_bytes:
                         messages_refactor.append(chunk)
                     else:
-                        chunksplit = map(''.join, zip(*[iter(chunk)]*420))
+                        chunksplit = map(''.join, zip(*[iter(chunk)]*available_bytes))
                         messages_refactor.extend(chunksplit)
             else:
-                if len(messages_refactor[-1] + " " + chunk) <= 420:
+                if bytecount(messages_refactor[-1] + " " + chunk) <= available_bytes:
                     messages_refactor[-1] = messages_refactor[-1] + " " + chunk
                 else:
-                    if len(chunk) <= 420:
+                    if bytecount(chunk) <= available_bytes:
                         messages_refactor.append(chunk)
                     else:
-                        chunksplit = map(''.join, zip(*[iter(chunk)]*420))
+                        chunksplit = map(''.join, zip(*[iter(chunk)]*available_bytes))
                         messages_refactor.extend(chunksplit)
             chunknum += 1
 
     for combinedline in messages_refactor:
-        if text_type == 'action':
+        if text_type == 'ACTION':
             bot.action(combinedline, recipients)
-            text_type = 'say'
-        elif text_type == 'notice':
+            text_type = 'PRIVMSG'
+        elif text_type == 'NOTICE':
             bot.notice(combinedline, recipients)
         else:
             bot.say(combinedline, recipients)
