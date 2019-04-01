@@ -212,21 +212,29 @@ def osd(bot, recipients, text_type, messages):
     if not isinstance(messages, list):
         messages = [messages]
 
-    if not isinstance(recipients, list):
-        recipients = [recipients]
-    recipients = ','.join(str(x) for x in recipients)
-
     text_type = text_type.upper()
     if text_type == 'SAY' or text_type not in ['NOTICE', 'ACTION']:
         text_type = 'PRIVMSG'
 
+    if not isinstance(recipients, list):
+        recipients = recipients.split(",")
+
     available_bytes = 512
-    reserved_irc_bytes = 10
-    available_bytes -= len((
-                                ":" + bot.users.get(bot.nick).hostmask + " "
-                                    + " " + recipients + " :"
-                                    ).encode('utf-8'))
+    reserved_irc_bytes = 15
     available_bytes -= reserved_irc_bytes
+    available_bytes -= len((bot.users.get(bot.nick).hostmask).encode('utf-8'))
+
+    maxtargets = 2
+    # if server.capabilities.maxtargets # TODO
+    recipientgroups, groupbytes = [], []
+    while len(recipients):
+        recipients_part = ','.join(x for x in recipients[-2:])
+        groupbytes.append(len((recipients_part).encode('utf-8')))
+        recipientgroups.append(recipients_part)
+        del recipients[-2:]
+
+    max_recipients_bytes = max(groupbytes)
+    available_bytes -= max_recipients_bytes
 
     messages_refactor = ['']
     for message in messages:
@@ -259,14 +267,16 @@ def osd(bot, recipients, text_type, messages):
                         messages_refactor.extend(chunksplit)
             chunknum += 1
 
-    for combinedline in messages_refactor:
-        if text_type == 'ACTION':
-            bot.action(combinedline, recipients)
-            text_type = 'PRIVMSG'
-        elif text_type == 'NOTICE':
-            bot.notice(combinedline, recipients)
-        else:
-            bot.say(combinedline, recipients)
+    for recipientgroup in recipientgroups:
+
+        for combinedline in messages_refactor:
+            if text_type == 'ACTION':
+                bot.action(combinedline, recipientgroup)
+                text_type = 'PRIVMSG'
+            elif text_type == 'NOTICE':
+                bot.notice(combinedline, recipientgroup)
+            else:
+                bot.say(combinedline, recipientgroup)
 
 
 """
