@@ -217,7 +217,7 @@ def osd(bot, recipients, text_type, messages):
     recipients = ','.join(str(x) for x in recipients)
 
     text_type = text_type.upper()
-    if text_type == 'say' or text_type not in ['notice', 'action']:
+    if text_type == 'SAY' or text_type not in ['NOTICE', 'ACTION']:
         text_type = 'PRIVMSG'
 
     available_bytes = 512
