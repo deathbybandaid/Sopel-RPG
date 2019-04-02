@@ -283,12 +283,12 @@ def osd(bot, recipients, text_type, messages):
 
         for combinedline in messages_refactor:
             if text_type == 'ACTION':
-                bot.action(combinedline, recipientgroup)
+                bot.write(('PRIVMSG', recipientgroup), '\001ACTION {}\001'.format(combinedline))
                 text_type = 'PRIVMSG'
             elif text_type == 'NOTICE':
-                bot.notice(combinedline, recipientgroup)
+                bot.write(('NOTICE', recipientgroup), combinedline)
             else:
-                bot.say(combinedline, recipientgroup)
+                bot.write(('PRIVMSG', recipientgroup), combinedline)
 
 
 """
