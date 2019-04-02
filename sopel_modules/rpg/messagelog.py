@@ -136,24 +136,24 @@ def osd(bot, recipients, text_type, messages):
         for chunk in chunks:
             if not chunknum:
                 if messages_refactor[-1] == '':
-                    if bytecount(chunk) <= available_bytes:
+                    if len(chunk.encode('utf-8')) <= available_bytes:
                         messages_refactor[-1] = chunk
                     else:
                         chunksplit = map(''.join, zip(*[iter(chunk)]*available_bytes))
                         messages_refactor.extend(chunksplit)
-                elif bytecount(messages_refactor[-1] + "   " + chunk) <= available_bytes:
+                elif len((messages_refactor[-1] + " " + chunk).encode('utf-8')) <= available_bytes:
                     messages_refactor[-1] = messages_refactor[-1] + "   " + chunk
                 else:
-                    if bytecount(chunk) <= available_bytes:
+                    if len(chunk.encode('utf-8')) <= available_bytes:
                         messages_refactor.append(chunk)
                     else:
                         chunksplit = map(''.join, zip(*[iter(chunk)]*available_bytes))
                         messages_refactor.extend(chunksplit)
             else:
-                if bytecount(messages_refactor[-1] + " " + chunk) <= available_bytes:
+                if len((messages_refactor[-1] + " " + chunk).encode('utf-8')) <= available_bytes:
                     messages_refactor[-1] = messages_refactor[-1] + " " + chunk
                 else:
-                    if bytecount(chunk) <= available_bytes:
+                    if len(chunk.encode('utf-8')) <= available_bytes:
                         messages_refactor.append(chunk)
                     else:
                         chunksplit = map(''.join, zip(*[iter(chunk)]*available_bytes))

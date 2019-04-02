@@ -209,7 +209,3 @@ def unique_id_create(bot):
         unique_id = uuid.uuid4()
     bot.memory['rpg']['message_display']["used_ids"].append(unique_id)
     return unique_id
-
-
-def bytecount(s):
-    return len(s.encode('utf-8'))
