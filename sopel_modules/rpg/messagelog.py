@@ -35,7 +35,7 @@ def messagelog_error(bot, log_id, error_id, error_content=[]):
         newloglist.append(existing_messagedict)
 
     if not error_exists_prior:
-        newmessagedict = {"type": "error", "error_id": error_id, "count": 1, "error_content" = error_content}
+        newmessagedict = {"type": "error", "error_id": error_id, "count": 1, "error_content": error_content}
         newloglist.append(newmessagedict)
 
     bot.memory['rpg']['message_display'][log_id] = newloglist
