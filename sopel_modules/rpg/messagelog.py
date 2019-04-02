@@ -2,8 +2,6 @@
 # coding=utf-8
 from __future__ import unicode_literals, absolute_import, print_function, division
 
-from .rpg import osd
-
 # pylama:ignore=W,E201,E202,E203,E221,E222,w292,E231
 
 error_message_dict = {
@@ -95,3 +93,80 @@ def messagelog_fillin(bot, rpg, message):
             message = str(message.replace("$current_chan", 'privmsg'))
 
     return message
+
+
+"""
+On Screen Text
+"""
+
+
+def osd(bot, recipients, text_type, messages):
+
+    if not isinstance(messages, list):
+        messages = [messages]
+
+    text_type = text_type.upper()
+    if text_type == 'SAY' or text_type not in ['NOTICE', 'ACTION']:
+        text_type = 'PRIVMSG'
+
+    if not isinstance(recipients, list):
+        recipients = recipients.split(",")
+
+    available_bytes = 512
+    reserved_irc_bytes = 15
+    available_bytes -= reserved_irc_bytes
+    available_bytes -= len((bot.users.get(bot.nick).hostmask).encode('utf-8'))
+
+    maxtargets = 2
+    # if server.capabilities.maxtargets # TODO
+    recipientgroups, groupbytes = [], []
+    while len(recipients):
+        recipients_part = ','.join(x for x in recipients[-2:])
+        groupbytes.append(len((recipients_part).encode('utf-8')))
+        recipientgroups.append(recipients_part)
+        del recipients[-2:]
+
+    max_recipients_bytes = max(groupbytes)
+    available_bytes -= max_recipients_bytes
+
+    messages_refactor = ['']
+    for message in messages:
+        chunknum = 0
+        chunks = message.split()
+        for chunk in chunks:
+            if not chunknum:
+                if messages_refactor[-1] == '':
+                    if bytecount(chunk) <= available_bytes:
+                        messages_refactor[-1] = chunk
+                    else:
+                        chunksplit = map(''.join, zip(*[iter(chunk)]*available_bytes))
+                        messages_refactor.extend(chunksplit)
+                elif bytecount(messages_refactor[-1] + "   " + chunk) <= available_bytes:
+                    messages_refactor[-1] = messages_refactor[-1] + "   " + chunk
+                else:
+                    if bytecount(chunk) <= available_bytes:
+                        messages_refactor.append(chunk)
+                    else:
+                        chunksplit = map(''.join, zip(*[iter(chunk)]*available_bytes))
+                        messages_refactor.extend(chunksplit)
+            else:
+                if bytecount(messages_refactor[-1] + " " + chunk) <= available_bytes:
+                    messages_refactor[-1] = messages_refactor[-1] + " " + chunk
+                else:
+                    if bytecount(chunk) <= available_bytes:
+                        messages_refactor.append(chunk)
+                    else:
+                        chunksplit = map(''.join, zip(*[iter(chunk)]*available_bytes))
+                        messages_refactor.extend(chunksplit)
+            chunknum += 1
+
+    for recipientgroup in recipientgroups:
+
+        for combinedline in messages_refactor:
+            if text_type == 'ACTION':
+                bot.write(('PRIVMSG', recipientgroup), '\001ACTION {}\001'.format(combinedline))
+                text_type = 'PRIVMSG'
+            elif text_type == 'NOTICE':
+                bot.write(('NOTICE', recipientgroup), combinedline)
+            else:
+                bot.write(('PRIVMSG', recipientgroup), combinedline)
