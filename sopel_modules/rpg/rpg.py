@@ -21,10 +21,7 @@ def configure(config):
 
 def setup(bot):
 
-    try:
-        import sopel_modules.osd
-    except:
-        raise ImportError('Sopel-RPG requires Sopel-OSD')
+    import sopel_modules.osd
 
     # Create memory reference for game
     bot.memory['rpg'] = dict()
