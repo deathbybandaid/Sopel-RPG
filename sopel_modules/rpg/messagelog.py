@@ -19,10 +19,9 @@ def messagelog_start(bot, log_id):
     bot.memory['rpg']['message_display'][log_id] = []
 
 
-def messagelog_error(bot, log_id, error_id, error_content=[]):
+def messagelog_error(bot, log_id, error_id):
 
     newloglist = []
-    newerrorcontent = []
     error_exists_prior = False
 
     for existing_messagedict in bot.memory['rpg']['message_display'][log_id]:
@@ -30,12 +29,10 @@ def messagelog_error(bot, log_id, error_id, error_content=[]):
             if existing_messagedict["error_id"] == error_id:
                 error_exists_prior = True
                 existing_messagedict["count"] += 1
-                if error_content != []:
-                    existing_messagedict["error_content"].extend(error_content)
         newloglist.append(existing_messagedict)
 
     if not error_exists_prior:
-        newmessagedict = {"type": "error", "error_id": error_id, "count": 1, "error_content": error_content}
+        newmessagedict = {"type": "error", "error_id": error_id, "count": 1}
         newloglist.append(newmessagedict)
 
     bot.memory['rpg']['message_display'][log_id] = newloglist
@@ -77,9 +74,9 @@ def messagelog_exit(bot, rpg, log_id):
 
     for messagedict in current_messages:
         if messagedict["type"] == 'error':
-            osd(bot, rpg.instigator, 'notice', messagedict['message'])
+            bot.osd(bot, messagedict['message'], rpg.instigator, 'notice')
         else:
-            osd(bot, messagedict["recipients"], 'say', messagedict['message'])
+            bot.osd(bot, messagedict['message'], messagedict["recipients"], 'say')
 
     del bot.memory['rpg']['message_display'][log_id]
 
