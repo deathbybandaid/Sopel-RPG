@@ -2,8 +2,6 @@
 # coding=utf-8
 from __future__ import unicode_literals, absolute_import, print_function, division
 
-import sopel_modules.osd
-
 error_message_dict = {
                         "privmsg_no": "RPG must be run in channel.",
                         }
