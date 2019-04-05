@@ -74,9 +74,9 @@ def messagelog_exit(bot, rpg, log_id):
 
     for messagedict in current_messages:
         if messagedict["type"] == 'error':
-            bot.osd(bot, messagedict['message'], rpg.instigator, 'notice')
+            bot.osd(messagedict['message'], rpg.instigator, 'notice')
         else:
-            bot.osd(bot, messagedict['message'], messagedict["recipients"], 'say')
+            bot.osd(messagedict['message'], messagedict["recipients"], 'say')
 
     del bot.memory['rpg']['message_display'][log_id]
 
