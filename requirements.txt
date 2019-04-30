@@ -1,6 +1,4 @@
 sopel>=6.0,<7
-spicemanip>=0.1.5
+spicemanip>=0.1.6
 git+git://github.com/deathbybandaid/Sopel-BotEvents
-git+git://github.com/deathbybandaid/Sopel-GifSearch
 git+git://github.com/deathbybandaid/Sopel-OSD
-git+git://github.com/deathbybandaid/sopel-commands-query
